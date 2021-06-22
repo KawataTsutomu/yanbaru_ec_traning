@@ -1,0 +1,15 @@
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/public/phpMyAdmin
+/public/phpMyAdmin-5.0.0-all-languages.zip
+/public/phpMyAdmin-5.0.0-all-languages/
