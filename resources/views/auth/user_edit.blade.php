@@ -166,8 +166,8 @@
                 </div>
             </form>
             <form method="GET" action="{{ route('user.delete') }}">
-                <div class="d-inline-flex　text-center mt-5">
-                    <button type="submit" class="btn btn-danger w-25 ml-5">退会</button>
+                <div class="d-inline-flex　text-center ">
+                    <button type="submit" class="btn btn-danger w-25 ">退会</button>
                 </div>
             </form>
         </div>
