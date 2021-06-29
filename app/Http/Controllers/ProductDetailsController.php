@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 
-    
+
 
 class ProductDetailsController extends Controller
 {
@@ -23,7 +23,7 @@ class ProductDetailsController extends Controller
         //idでプロダクトを検索
         $product = Product::find($id);
         $categoryName = Category::find($product->category_id);
-        
+
         //該当商品あれば表示
         if (isset($product)) {
             return view('products.infoItem', compact('user', 'product', 'categoryName'));
@@ -43,7 +43,7 @@ class ProductDetailsController extends Controller
             'session_products_quantity' => $request->products_quantity
         ];
 
-        
+
 
          //cartDataが入ってない場合、そのままsessionへ（初めて商品を追加する場合）
         if (!$request->session()->has('cartData')) {
@@ -51,12 +51,13 @@ class ProductDetailsController extends Controller
         }else{
              //cartDataが既に入ってる場合、まず情報取得して代入
             $sessionCartData = $request->session()->get('cartData');
-
-             //代入値を番号付きでループ処理
+            //flag定義 product_id同一確認フラグ = 同一ではない状態
+            $flag = false;
+            //代入値を番号付きでループ処理
             foreach ($sessionCartData as $key => $sessionData) {
                  //もともとの入ってる商品と追加しようとする商品が同じ場合（同じ商品を追加する場合）
                 if ($sessionData['session_products_id'] === $addData['session_products_id']) {
-
+                    $flag = true;
                      //個数の合算処理
                     $quantity = $sessionData['session_products_quantity'] + $addData['session_products_quantity'];
 
@@ -69,13 +70,13 @@ class ProductDetailsController extends Controller
             }
              //もともとの入ってる商品と追加しようとする商品が違う場合（違う商品を追加する場合）
 
-            if ($sessionData['session_products_id'] !== $addData['session_products_id']) {
+            if ($flag === false) {
                 $request->session()->push('cartData', $addData);
             }
         }
          //$keyにユーザー情報をsession保存（ユーザー情報の移動作業）
         $request->session()->put('users_id', ($request->users_id));
-        
+
          //保存完了したらカート内商品一覧画面にリダイレクト
         return redirect()->route('cart.index');
     }
@@ -130,16 +131,16 @@ class ProductDetailsController extends Controller
 
         //削除ボタンから受け取ったproduct_idと個数を2次元配列に
         $removeCartItem = [
-            ['session_products_id' => $request->product_id, 
+            ['session_products_id' => $request->product_id,
             'session_products_quantity' => $request->product_quantity]
         ];
-        
+
 
         //sessionデータと削除対象データを比較、重複部分を削除し残りの配列を抽出
         $removeCompletedCartData = array_udiff($sessionCartData, $removeCartItem, function ($sessionCartData, $removeCartItem) {
             $result1 = $sessionCartData['session_products_id'] - $removeCartItem['session_products_id'];
             $result2 = $sessionCartData['session_products_quantity'] - $removeCartItem['session_products_quantity'];
-            return $result1 + $result2;   
+            return $result1 + $result2;
         });
 
         //上記の抽出情報でcartDataを上書き処理
