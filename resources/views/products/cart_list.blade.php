@@ -98,4 +98,4 @@
 
 </main>
 
-@endsection 
+@endsection
