@@ -5,17 +5,21 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 
 
 class ProductDetailsController extends Controller
 {
+    private const SHIPMENT_STATUS_PREPARE = 1;
     //商品検索画面からPOSTされたデータをviewへ送信
     public function show($id)
     {
@@ -156,4 +160,37 @@ class ProductDetailsController extends Controller
         return view('products.no_cart_list', compact('auth'));
     }
 
+    // カート内商品注文確定(DB登録)
+    public function store(Request $request)
+    {
+        $cartData = $request->session()->get('cartData');
+        $now = Carbon::now();
+
+        //インスタンス生成
+        $order = new \App\Models\Order;
+        //指定値をインスタンス代入
+        $order->user_id = Auth::user()->id;
+        $order->order_date = $now;
+        $order->save(); //↑の情報を保存する
+
+        $savedOrder = Order::where('id', $order->id)->get();
+        $savedOrderId = $savedOrder->pluck('id')->toArray();
+
+        //注文詳細情報保存を注文数分繰り返す １回のリクエストを複数カラムに分けDB登録
+        foreach ($cartData as $data) {
+            //注文詳細情報に関わるインスタンス生成
+            $orderDetail = new \App\Models\OrderDetail;
+            $orderDetail->product_id = $data['session_products_id'];
+            $orderDetail->order_id = $savedOrderId[0];
+            $orderDetail->shipment_status_id = self::SHIPMENT_STATUS_PREPARE;
+            $orderDetail->order_detail_number = rand();
+            $orderDetail->order_quantity = $data['session_products_quantity'];
+            $orderDetail->shipment_date = $now;
+            $orderDetail->save();
+        }
+
+        //session削除
+        $request->session()->forget('cartData');
+        return view('products.purchase_completed', compact('orderDetail'));
+    }
 }
