@@ -45,6 +45,10 @@ Route::get('cart', 'ProductDetailsController@takeCart')->name('cart.index');
 Route::view('no-cartList', 'products/no_cart_list')->name('noCartlist');
 //カート内商品削除
 Route::post('itemRemove', 'ProductDetailsController@remove')->name('itemRemove');
+//カート購入完了画面
+//注文完了
+Route::view('completed', 'products/purchase_completed');
+Route::post('completed', 'ProductDetailsController@store')->name('completed');
 
 // 注文履歴
 Route::get('orders', 'OrdersController@show')->name('order.history');

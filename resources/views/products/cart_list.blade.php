@@ -89,13 +89,17 @@
                     <!-- ボタン -->
                     <div class="col-12 row justify-content-center mt-3">
                         <button class="btn btn-info mx-3">買い物を続ける</button>
-                        <button class="btn btn-primary mx-3">注文を確定する</button>
+                        <form class="btn btn-primary mx-3" action="completed" method="post" value="{{  $data['session_products_id'] }}">
+                            @csrf
+                            <td class="col-1 px-0 text-center">
+                                <input type="submit" name="completed" class="btn btn-primary" value="注文を確定する">
+                            </td>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 </main>
 
 @endsection
