@@ -31,9 +31,11 @@
                             @foreach ($orders as $order)
                             <tr class="d-flex">
                                 <th scope="row" class="col-1 px-0 text-center">{{ $loop->iteration }}</th>
-                                <td class="col-2 px-0 text-center" id="order_number_1">
-                                    {{ $order->order_detail_number }}
-                                </td>
+                                    <td class="col-2 px-0 text-center" id="order_number_1">
+                                    @foreach ($order->orderDetails as $orderDetail)
+                                        {{ $orderDetail->order_detail_number }}
+                                    @endforeach
+                                    </td>
                                 <td class="col-4 px-2">
                                     <div>〒<span id="postal_code_1"></span>{{ $order->user->zipcode }}</div>
                                     <div id="address_1">
