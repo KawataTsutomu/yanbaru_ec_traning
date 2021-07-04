@@ -88,7 +88,7 @@
                     </div>
                     <!-- ボタン -->
                     <div class="col-12 row justify-content-center mt-3">
-                        <button class="btn btn-info mx-3">買い物を続ける</button>
+                        <button class="btn btn-info mx-3" onclick=location.href='products'>買い物を続ける</button>
                         <form class="btn btn-primary mx-3" action="completed" method="post" value="{{  $data['session_products_id'] }}">
                             @csrf
                             <td class="col-1 px-0 text-center">
