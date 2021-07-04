@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    public $timestamps = false;
     protected $table = 't_orders';
     protected $dates = ['order_date'];
 
